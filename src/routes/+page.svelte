@@ -141,7 +141,7 @@
 		// Also try getData for common types to ensure we get everything
 		for (const type of types) {
 			// Skip if we already have this type from items
-			if (newData.some(d => d.type === type)) continue;
+			if (newData.some((d) => d.type === type)) continue;
 
 			try {
 				const data = clipData.getData(type);
@@ -158,33 +158,29 @@
 
 					newData.push(dataItem);
 				}
-			} catch (e) {
-			}
+			} catch (e) {}
 		}
 
 		clipboardData = newData;
 		isPasting = false;
 	}
-
 </script>
 
 <div class="min-h-screen bg-white" onpaste={handlePaste}>
-	<div class="container mx-auto px-4 py-8 max-w-4xl">
+	<div class="container mx-auto max-w-4xl px-4 py-8">
 		<header class="mb-12">
-			<h1 class="text-5xl font-bold text-purple-600 mb-6">📋 Clippy</h1>
-			<p class="text-xl text-black mb-4">
-				See what's actually in your clipboard.
-			</p>
+			<h1 class="mb-6 text-5xl font-bold text-purple-600">📋 Clippy</h1>
+			<p class="mb-4 text-xl text-black">See what's actually in your clipboard.</p>
 
-			<div class="bg-purple-50 border-4 border-purple-600 p-6">
-				<p class="font-bold text-lg mb-4">To get started, either:</p>
+			<div class="border-4 border-purple-600 bg-purple-50 p-6">
+				<p class="mb-4 text-lg font-bold">To get started, either:</p>
 				<ul class="space-y-4 text-black">
 					<li class="flex items-start gap-3">
 						<span class="flex-shrink-0">•</span>
-						<div class="flex items-center gap-2 flex-wrap">
+						<div class="flex flex-wrap items-center gap-2">
 							<button
 								onclick={pasteFromClipboardAPI}
-								class="appearance-none border-2 border-black px-2 py-1 bg-white text-black whitespace-nowrap hover:bg-purple-100 transition-colors"
+								class="appearance-none border-2 border-black bg-white px-2 py-1 whitespace-nowrap text-black transition-colors hover:bg-purple-100"
 								style="box-shadow: 0.1em 0.1em currentColor;"
 							>
 								Paste using the Clipboard API
@@ -194,22 +190,22 @@
 					</li>
 					<li class="flex items-start gap-3">
 						<span class="flex-shrink-0">•</span>
-						<div class="flex items-center gap-2 flex-wrap">
+						<div class="flex flex-wrap items-center gap-2">
 							<span>Paste with the</span>
-							<kbd class="px-2 py-1 bg-white border-2 border-black font-mono text-sm">Ctrl+V</kbd>
+							<kbd class="border-2 border-black bg-white px-2 py-1 font-mono text-sm">Ctrl+V</kbd>
 							<span>/</span>
-							<kbd class="px-2 py-1 bg-white border-2 border-black font-mono text-sm">⌘V</kbd>
+							<kbd class="border-2 border-black bg-white px-2 py-1 font-mono text-sm">⌘V</kbd>
 							<span>keyboard shortcut</span>
 						</div>
 					</li>
 					<li class="flex items-start gap-3">
 						<span class="flex-shrink-0">•</span>
-						<div class="flex items-center gap-2 flex-wrap">
+						<div class="flex flex-wrap items-center gap-2">
 							<input
 								type="text"
 								placeholder="paste in here"
 								onpaste={handlePaste}
-								class="px-3 py-1 bg-white border-2 border-black focus:outline-none focus:border-purple-600"
+								class="border-2 border-black bg-white px-3 py-1 focus:border-purple-600 focus:outline-none"
 							/>
 							<span>if you don't have a keyboard</span>
 						</div>
@@ -219,38 +215,46 @@
 		</header>
 
 		{#if isPasting}
-			<div class="text-center text-purple-500 my-12">
-				<div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></div>
+			<div class="my-12 text-center text-purple-500">
+				<div
+					class="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-purple-500 border-t-transparent"
+				></div>
 				<p class="text-lg">Processing clipboard...</p>
 			</div>
 		{/if}
 
 		{#if clipboardData.length > 0}
 			<div>
-				<div class="flex items-center justify-between mb-4">
+				<div class="mb-4 flex items-center justify-between">
 					<h2 class="text-2xl font-bold text-purple-600">Clipboard Contents</h2>
-					<span class="bg-purple-100 text-purple-700 px-4 py-2 font-semibold">
-						{clipboardData.length} {clipboardData.length === 1 ? 'item' : 'items'}
+					<span class="bg-purple-100 px-4 py-2 font-semibold text-purple-700">
+						{clipboardData.length}
+						{clipboardData.length === 1 ? 'item' : 'items'}
 					</span>
 				</div>
 
 				<table class="w-full table-fixed">
 					<thead>
 						<tr class="bg-purple-100">
-							<th class="border-b-2 border-r-2 border-black px-4 py-3 text-left font-bold text-black w-1/4">Type</th>
-							<th class="border-b-2 border-black px-4 py-3 text-left font-bold text-black w-3/4">Contents</th>
+							<th
+								class="w-1/4 border-r-2 border-b-2 border-black px-4 py-3 text-left font-bold text-black"
+								>Type</th
+							>
+							<th class="w-3/4 border-b-2 border-black px-4 py-3 text-left font-bold text-black"
+								>Contents</th
+							>
 						</tr>
 					</thead>
 					<tbody>
 						{#each clipboardData as data}
 							<tr class="bg-white">
-								<td class="border-b-2 border-r-2 border-black px-4 py-3 align-top break-words">
+								<td class="border-r-2 border-b-2 border-black px-4 py-3 align-top break-words">
 									<div class="flex flex-col gap-2">
-										<code class="text-sm text-purple-600 font-semibold break-all">{data.type}</code>
+										<code class="text-sm font-semibold break-all text-purple-600">{data.type}</code>
 										{#if !data.imageUrl}
 											<button
 												onclick={() => copyAsPlaintext(data.content)}
-												class="appearance-none border-2 border-black px-2 py-1 bg-white text-black text-xs hover:bg-purple-100 transition-colors w-fit"
+												class="w-fit appearance-none border-2 border-black bg-white px-2 py-1 text-xs text-black transition-colors hover:bg-purple-100"
 												style="box-shadow: 0.1em 0.1em currentColor;"
 											>
 												Copy as plaintext
@@ -271,18 +275,26 @@
 									{:else if data.html && data.type === 'text/html'}
 										<div class="space-y-4">
 											<div>
-												<h4 class="font-semibold text-purple-600 mb-2">Rendered HTML:</h4>
-												<div class="bg-purple-50 p-4 border-2 border-purple-200 overflow-auto max-h-96">
+												<h4 class="mb-2 font-semibold text-purple-600">Rendered HTML:</h4>
+												<div
+													class="max-h-96 overflow-auto border-2 border-purple-200 bg-purple-50 p-4"
+												>
 													{@html data.html}
 												</div>
 											</div>
 											<div>
-												<h4 class="font-semibold text-purple-600 mb-2">Raw HTML:</h4>
-												<pre class="bg-white p-4 text-sm border-2 border-black whitespace-pre-wrap break-words overflow-auto max-h-96"><code>{data.content}</code></pre>
+												<h4 class="mb-2 font-semibold text-purple-600">Raw HTML:</h4>
+												<pre
+													class="max-h-96 overflow-auto border-2 border-black bg-white p-4 text-sm break-words whitespace-pre-wrap"><code
+														>{data.content}</code
+													></pre>
 											</div>
 										</div>
 									{:else}
-										<pre class="bg-white p-4 text-sm whitespace-pre-wrap break-words border-2 border-black"><code>{data.content}</code></pre>
+										<pre
+											class="border-2 border-black bg-white p-4 text-sm break-words whitespace-pre-wrap"><code
+												>{data.content}</code
+											></pre>
 									{/if}
 								</td>
 							</tr>
@@ -291,29 +303,37 @@
 				</table>
 
 				<div class="mt-8">
-					<h3 class="text-xl font-bold text-purple-600 mb-4">Items and Files Metadata</h3>
+					<h3 class="mb-4 text-xl font-bold text-purple-600">Items and Files Metadata</h3>
 					<table class="w-full table-fixed">
 						<thead>
 							<tr class="bg-purple-100">
-								<th class="border-b-2 border-r-2 border-black px-4 py-3 text-left font-bold text-black w-1/4">Type</th>
-								<th class="border-b-2 border-r-2 border-black px-4 py-3 text-left font-bold text-black w-1/4">Size</th>
-								<th class="border-b-2 border-black px-4 py-3 text-left font-bold text-black w-1/2">File Name</th>
+								<th
+									class="w-1/4 border-r-2 border-b-2 border-black px-4 py-3 text-left font-bold text-black"
+									>Type</th
+								>
+								<th
+									class="w-1/4 border-r-2 border-b-2 border-black px-4 py-3 text-left font-bold text-black"
+									>Size</th
+								>
+								<th class="w-1/2 border-b-2 border-black px-4 py-3 text-left font-bold text-black"
+									>File Name</th
+								>
 							</tr>
 						</thead>
 						<tbody>
 							{#each clipboardData as data}
 								<tr class="bg-white">
-									<td class="border-b-2 border-r-2 border-black px-4 py-3 align-top break-words">
-										<code class="text-sm text-purple-600 font-semibold break-all">{data.type}</code>
+									<td class="border-r-2 border-b-2 border-black px-4 py-3 align-top break-words">
+										<code class="text-sm font-semibold break-all text-purple-600">{data.type}</code>
 									</td>
-									<td class="border-b-2 border-r-2 border-black px-4 py-3 text-sm text-black">
+									<td class="border-r-2 border-b-2 border-black px-4 py-3 text-sm text-black">
 										{#if data.size !== undefined}
 											{data.size.toLocaleString()} bytes
 										{:else}
 											-
 										{/if}
 									</td>
-									<td class="border-b-2 border-black px-4 py-3 text-sm text-black break-words">
+									<td class="border-b-2 border-black px-4 py-3 text-sm break-words text-black">
 										{data.fileName || '-'}
 									</td>
 								</tr>
@@ -324,9 +344,11 @@
 			</div>
 		{/if}
 
-		<footer class="mt-12 text-center text-sm text-black pb-8">
-			Built by Tas Hasting and mostly Claude tbh
+		<footer class="mt-12 pb-8 text-center text-sm text-black">
+			Built by Tas Hasting. <a
+				href="https://github.com/tascodes/clippy"
+				class="text-purple-600 hover:underline">Source on GitHub</a
+			>
 		</footer>
 	</div>
 </div>
-
