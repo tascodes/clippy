@@ -7,6 +7,10 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<title>Clippy - Clipboard Inspector</title>
+	<meta name="description" content="Debug your clipboard contents with ease" />
 </svelte:head>
 
-{@render children?.()}
+<div class="antialiased">
+	{@render children?.()}
+</div>
