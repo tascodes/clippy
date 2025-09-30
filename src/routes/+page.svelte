@@ -1,4 +1,6 @@
 <script lang="ts">
+	import DOMPurify from 'dompurify';
+
 	interface ClipboardData {
 		type: string;
 		content: string | null;
@@ -279,7 +281,7 @@
 												<div
 													class="max-h-96 overflow-auto border-2 border-purple-200 bg-purple-50 p-4"
 												>
-													{@html data.html}
+													{@html DOMPurify.sanitize(data.html)}
 												</div>
 											</div>
 											<div>
