@@ -1,38 +1,40 @@
-# sv
+# Clippy
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A clipboard inspection tool that shows you exactly what's in your clipboard across all data formats.
 
-## Creating a project
+## What it does
 
-If you're seeing this, you've probably already done this step. Congrats!
+Clippy reveals the hidden complexity of clipboard data. When you copy something, it's often stored in multiple formats (plain text, HTML, images, RTF, etc.). This tool displays all of them so you can:
 
-```sh
-# create a new project in the current directory
-npx sv create
+- See rendered HTML alongside raw markup
+- View images and their metadata
+- Inspect MIME types and file sizes
+- Copy content back as plaintext
 
-# create a new project in my-app
-npx sv create my-app
-```
+Built with SvelteKit and deployed to Cloudflare Workers.
 
-## Developing
+## Local development
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+Install dependencies:
 
 ```sh
-npm run build
+bun install
 ```
 
-You can preview the production build with `npm run preview`.
+Start the dev server:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+bun run dev
+```
+
+The app will be available at `http://localhost:5173`.
+
+## Deploying
+
+This app is configured for Cloudflare Workers. To deploy:
+
+```sh
+bun run deploy
+```
+
+This builds the app and deploys it via Wrangler. Make sure you're authenticated with Cloudflare CLI first (`wrangler login`).
