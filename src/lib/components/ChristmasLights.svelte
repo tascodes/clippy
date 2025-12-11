@@ -285,10 +285,10 @@
 			transform: rotate(0deg);
 		}
 		25% {
-			transform: rotate(2deg);
+			transform: rotate(5deg);
 		}
 		75% {
-			transform: rotate(-2deg);
+			transform: rotate(-5deg);
 		}
 	}
 
