@@ -1,5 +1,7 @@
 <script lang="ts">
 	import DOMPurify from 'dompurify';
+	import JsonViewer from '$lib/components/JsonViewer.svelte';
+	import { looksLikeJson } from '$lib/parseJson';
 
 	interface ClipboardData {
 		type: string;
@@ -12,6 +14,20 @@
 
 	let clipboardData = $state<ClipboardData[]>([]);
 	let isPasting = $state(false);
+
+	// Tracks which clipboard items are showing JSON view (true) vs raw view (false).
+	// Defaults to JSON view for any item whose content parses as a JSON object/array.
+	let jsonViewActive = $state<Record<number, boolean>>({});
+
+	$effect(() => {
+		const next: Record<number, boolean> = {};
+		clipboardData.forEach((item, i) => {
+			if (!item.imageUrl && !item.html && looksLikeJson(item.content)) {
+				next[i] = true;
+			}
+		});
+		jsonViewActive = next;
+	});
 
 	async function copyAsPlaintext(content: string | null) {
 		if (!content) return;
@@ -248,7 +264,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each clipboardData as data}
+						{#each clipboardData as data, i}
 							<tr class="bg-white">
 								<td class="border-r-2 border-b-2 border-black px-4 py-3 align-top break-words">
 									<div class="flex flex-col gap-2">
@@ -291,6 +307,38 @@
 														>{data.content}</code
 													></pre>
 											</div>
+										</div>
+									{:else if looksLikeJson(data.content)}
+										<!-- JSON viewer with Raw toggle -->
+										<div class="overflow-hidden border-2 border-black bg-white">
+											<div class="flex border-b-2 border-black">
+												<button
+													onclick={() =>
+														(jsonViewActive = { ...jsonViewActive, [i]: true })}
+													class="border-r-2 border-black px-3 py-1.5 text-xs font-semibold transition-colors {jsonViewActive[i]
+														? 'bg-purple-100 text-purple-700'
+														: 'bg-white text-gray-500 hover:bg-gray-50'}"
+												>
+													JSON
+												</button>
+												<button
+													onclick={() =>
+														(jsonViewActive = { ...jsonViewActive, [i]: false })}
+													class="px-3 py-1.5 text-xs font-semibold transition-colors {!jsonViewActive[i]
+														? 'bg-purple-100 text-purple-700'
+														: 'bg-white text-gray-500 hover:bg-gray-50'}"
+												>
+													Raw
+												</button>
+											</div>
+											{#if jsonViewActive[i]}
+												<JsonViewer content={data.content ?? ''} />
+											{:else}
+												<pre
+													class="max-h-[32rem] overflow-auto p-4 text-sm break-words whitespace-pre-wrap"><code
+														>{data.content}</code
+													></pre>
+											{/if}
 										</div>
 									{:else}
 										<pre
