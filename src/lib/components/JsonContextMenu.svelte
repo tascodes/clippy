@@ -106,7 +106,7 @@
 >
 	{#if keyName !== null}
 		<button
-			class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
+			class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
 			onclick={copyName}
 			role="menuitem"
 		>
@@ -115,7 +115,7 @@
 	{/if}
 
 	<button
-		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
+		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
 		onclick={copyValue}
 		role="menuitem"
 	>
@@ -131,7 +131,7 @@
 	>
 		<button
 			class="flex w-full items-center justify-between px-4 py-1.5 text-left transition-colors
-				{showValueAs ? 'bg-purple-600 text-white' : 'text-gray-900 hover:bg-purple-200 hover:text-white'}"
+				{showValueAs ? 'bg-purple-400 text-white' : 'text-gray-900 hover:bg-purple-400 hover:text-white'}"
 			role="menuitem"
 			aria-haspopup="true"
 			aria-expanded={showValueAs}
@@ -155,14 +155,14 @@
 				onmouseleave={scheduleHide}
 			>
 				<button
-					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
+					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
 					onclick={copyMinified}
 					role="menuitem"
 				>
 					Minified Value
 				</button>
 				<button
-					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
+					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
 					onclick={copyFormatted}
 					role="menuitem"
 				>
@@ -175,7 +175,7 @@
 	<div class="my-1 border-t-2 border-black"></div>
 
 	<button
-		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
+		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
 		onclick={copyPath}
 		role="menuitem"
 	>
