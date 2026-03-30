@@ -96,6 +96,16 @@
 	oncontextmenu={(e) => { e.preventDefault(); onclose(); }}
 ></div>
 
+{#snippet item(label: string, onclick: () => void)}
+	<button
+		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
+		{onclick}
+		role="menuitem"
+	>
+		{label}
+	</button>
+{/snippet}
+
 <!-- Menu -->
 <div
 	bind:this={menuEl}
@@ -105,22 +115,10 @@
 	tabindex="-1"
 >
 	{#if keyName !== null}
-		<button
-			class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
-			onclick={copyName}
-			role="menuitem"
-		>
-			Copy Name
-		</button>
+		{@render item('Copy Name', copyName)}
 	{/if}
 
-	<button
-		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
-		onclick={copyValue}
-		role="menuitem"
-	>
-		Copy Value
-	</button>
+	{@render item('Copy Value', copyValue)}
 
 	<!-- Copy Value As — submenu trigger -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -154,31 +152,13 @@
 				onmouseenter={showSubmenu}
 				onmouseleave={scheduleHide}
 			>
-				<button
-					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
-					onclick={copyMinified}
-					role="menuitem"
-				>
-					Minified Value
-				</button>
-				<button
-					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
-					onclick={copyFormatted}
-					role="menuitem"
-				>
-					Formatted Value
-				</button>
+				{@render item('Minified Value', copyMinified)}
+				{@render item('Formatted Value', copyFormatted)}
 			</div>
 		{/if}
 	</div>
 
 	<div class="my-1 border-t-2 border-black"></div>
 
-	<button
-		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-400 hover:text-white"
-		onclick={copyPath}
-		role="menuitem"
-	>
-		Copy Path
-	</button>
+	{@render item('Copy Path', copyPath)}
 </div>
