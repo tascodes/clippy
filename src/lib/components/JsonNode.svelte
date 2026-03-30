@@ -68,10 +68,10 @@
 		}
 	});
 
-	// Scroll into view when this becomes the active match
+	// Scroll into view when the user actively navigates to this match (not on bare typing)
 	$effect(() => {
 		const cm = search?.currentMatch;
-		if (cm?.path === path && rowEl) {
+		if (cm?.path === path && rowEl && search?.userNavigated) {
 			// Small delay so expand effects can settle before scrolling
 			setTimeout(() => rowEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 		}

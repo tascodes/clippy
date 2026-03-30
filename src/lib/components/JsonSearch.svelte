@@ -28,7 +28,7 @@
 		}
 	}
 
-	const noMatches = $derived(term.length >= 3 && matchCount === 0);
+	const noMatches = $derived(term.length >= 1 && matchCount === 0);
 </script>
 
 <div class="flex items-center gap-1.5 border-b-2 border-black bg-white px-3 py-2">
@@ -74,10 +74,10 @@
 
 	<!-- Match counter -->
 	<span class="min-w-[72px] text-center font-mono text-xs tabular-nums text-gray-500">
-		{#if term.length < 3}
-			3+ chars
+		{#if term.length === 0}
+			&nbsp;
 		{:else if noMatches}
-			<span class="text-red-500 font-semibold">No matches</span>
+			<span class="font-semibold text-red-500">No matches</span>
 		{:else}
 			{currentIdx + 1} / {matchCount}
 		{/if}

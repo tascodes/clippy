@@ -49,24 +49,30 @@
 
 	const currentMatch = $derived(currentMatchIdx >= 0 ? (matches[currentMatchIdx] ?? null) : null);
 
-	// Paths of ancestor nodes that must be expanded to show the current match
+	// True only when the user has pressed next/prev — typing alone never expands or scrolls.
+	let userNavigated = $state(false);
+
+	// Expand ancestor nodes only when the user has actively stepped to a match.
 	const expandPaths = $derived(
-		currentMatch ? new Set(currentMatch.ancestorPaths) : new Set<string>()
+		userNavigated && currentMatch ? new Set(currentMatch.ancestorPaths) : new Set<string>()
 	);
 
-	// Reset to first match whenever the matches list changes (i.e. term changed)
+	// When the match list changes (term changed), reset index and clear navigation flag.
 	$effect(() => {
 		currentMatchIdx = matches.length > 0 ? 0 : -1;
+		userNavigated = false;
 	});
 
 	function nextMatch() {
 		if (matches.length === 0) return;
 		currentMatchIdx = (currentMatchIdx + 1) % matches.length;
+		userNavigated = true;
 	}
 
 	function prevMatch() {
 		if (matches.length === 0) return;
 		currentMatchIdx = (currentMatchIdx - 1 + matches.length) % matches.length;
+		userNavigated = true;
 	}
 
 	function openSearch() {
@@ -103,6 +109,9 @@
 		},
 		get expandPaths() {
 			return expandPaths;
+		},
+		get userNavigated() {
+			return userNavigated;
 		}
 	};
 	setContext(SEARCH_CTX, searchCtx);

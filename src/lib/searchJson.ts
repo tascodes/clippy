@@ -22,6 +22,11 @@ export interface SearchCtx {
 	readonly currentMatch: SearchMatch | null;
 	/** Set of ancestor paths that should be auto-expanded to show the current match. */
 	readonly expandPaths: Set<string>;
+	/**
+	 * True only when the user has actively pressed next/prev — gates auto-expand and
+	 * scroll-into-view so that merely typing never collapses/expands the tree.
+	 */
+	readonly userNavigated: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -36,7 +41,7 @@ export function splitHighlight(
 	text: string,
 	term: string
 ): Array<{ text: string; match: boolean }> {
-	if (!term || term.length < 3) return [{ text, match: false }];
+	if (!term) return [{ text, match: false }];
 	const parts: Array<{ text: string; match: boolean }> = [];
 	const lo = text.toLowerCase();
 	const lt = term.toLowerCase();
@@ -113,7 +118,7 @@ function collectMatches(
  * Mirrors the same root-unwrapping logic that JsonViewer uses when rendering.
  */
 export function computeMatches(data: unknown, term: string): SearchMatch[] {
-	if (!term || term.length < 3) return [];
+	if (!term) return [];
 	const lowerTerm = term.toLowerCase();
 	const out: SearchMatch[] = [];
 
