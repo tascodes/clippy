@@ -112,6 +112,7 @@
 		class="flex cursor-default items-start gap-1.5 rounded py-[3px] pl-1 pr-2 hover:bg-gray-50
 			{isCurrentKeyMatch || isCurrentValMatch ? 'bg-orange-50' : ''}"
 		oncontextmenu={handleContextMenu}
+		ondblclick={isExpandable ? () => (collapsed = !collapsed) : undefined}
 	>
 		<!-- Expand/collapse toggle -->
 		{#if isExpandable}
@@ -123,7 +124,7 @@
 				{collapsed ? '+' : '−'}
 			</button>
 		{:else}
-			<span class="mt-[2px] h-[14px] w-[14px] flex-shrink-0"></span>
+			<span class="mt-0.5 h-3.5 w-3.5 shrink-0"></span>
 		{/if}
 
 		<!-- Key -->
@@ -180,7 +181,7 @@
 		</div>
 		<!-- Closing bracket aligned with the key text above (spacer = toggle width) -->
 		<div class="flex items-start gap-1.5 py-[3px] pl-1">
-			<span class="h-[14px] w-[14px] flex-shrink-0"></span>
+			<span class="h-3.5 w-3.5 shrink-0"></span>
 			<span class="text-gray-500">{closeBracket}</span>
 		</div>
 	{/if}

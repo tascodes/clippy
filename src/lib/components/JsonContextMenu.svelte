@@ -13,6 +13,16 @@
 	let { x, y, keyName, data, path, onclose }: Props = $props();
 
 	let showValueAs = $state(false);
+	let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function showSubmenu() {
+		if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+		showValueAs = true;
+	}
+
+	function scheduleHide() {
+		hideTimer = setTimeout(() => { showValueAs = false; }, 120);
+	}
 	let menuEl = $state<HTMLElement | null>(null);
 	let submenuEl = $state<HTMLElement | null>(null);
 
@@ -89,13 +99,14 @@
 <!-- Menu -->
 <div
 	bind:this={menuEl}
-	class="fixed z-[9999] min-w-[190px] select-none overflow-hidden rounded-xl border border-gray-200 bg-white py-1 text-sm shadow-2xl"
-	style="left: {left}px; top: {top}px;"
+	class="fixed z-9999 min-w-[190px] select-none border-2 border-black bg-white py-1 text-sm"
+	style="left: {left}px; top: {top}px; box-shadow: 4px 4px 0 black;"
 	role="menu"
+	tabindex="-1"
 >
 	{#if keyName !== null}
 		<button
-			class="w-full px-4 py-[5px] text-left text-gray-900 hover:bg-blue-500 hover:text-white"
+			class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
 			onclick={copyName}
 			role="menuitem"
 		>
@@ -104,7 +115,7 @@
 	{/if}
 
 	<button
-		class="w-full px-4 py-[5px] text-left text-gray-900 hover:bg-blue-500 hover:text-white"
+		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
 		onclick={copyValue}
 		role="menuitem"
 	>
@@ -115,39 +126,43 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="relative"
-		onmouseenter={() => (showValueAs = true)}
-		onmouseleave={() => (showValueAs = false)}
+		onmouseenter={showSubmenu}
+		onmouseleave={scheduleHide}
 	>
 		<button
-			class="flex w-full items-center justify-between px-4 py-[5px] text-left text-gray-900 transition-colors
-				{showValueAs ? 'bg-blue-500 text-white' : 'hover:bg-blue-500 hover:text-white'}"
+			class="flex w-full items-center justify-between px-4 py-1.5 text-left transition-colors
+				{showValueAs ? 'bg-purple-600 text-white' : 'text-gray-900 hover:bg-purple-200 hover:text-white'}"
 			role="menuitem"
 			aria-haspopup="true"
 			aria-expanded={showValueAs}
 		>
 			<span>Copy Value As</span>
-			<span class="ml-6 opacity-60">›</span>
+			<span class="ml-6 opacity-70">›</span>
 		</button>
 
 		{#if showValueAs}
 			<div
 				bind:this={submenuEl}
-				class="absolute top-0 min-w-[160px] rounded-xl border border-gray-200 bg-white py-1 shadow-2xl"
+				class="absolute top-0 min-w-[160px] border-2 border-black bg-white py-1"
 				class:right-full={submenuLeft === 'left'}
 				class:left-full={submenuLeft === 'right'}
-				class:mr-1={submenuLeft === 'left'}
-				class:ml-1={submenuLeft === 'right'}
+				class:mr-[-2px]={submenuLeft === 'left'}
+				class:ml-[-2px]={submenuLeft === 'right'}
+				style="box-shadow: 2px 2px 0 black;"
 				role="menu"
+				tabindex="-1"
+				onmouseenter={showSubmenu}
+				onmouseleave={scheduleHide}
 			>
 				<button
-					class="w-full px-4 py-[5px] text-left text-gray-900 hover:bg-blue-500 hover:text-white"
+					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
 					onclick={copyMinified}
 					role="menuitem"
 				>
 					Minified Value
 				</button>
 				<button
-					class="w-full px-4 py-[5px] text-left text-gray-900 hover:bg-blue-500 hover:text-white"
+					class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
 					onclick={copyFormatted}
 					role="menuitem"
 				>
@@ -157,10 +172,10 @@
 		{/if}
 	</div>
 
-	<div class="my-1 border-t border-gray-100"></div>
+	<div class="my-1 border-t-2 border-black"></div>
 
 	<button
-		class="w-full px-4 py-[5px] text-left text-gray-900 hover:bg-blue-500 hover:text-white"
+		class="w-full px-4 py-1.5 text-left text-gray-900 hover:bg-purple-200 hover:text-white"
 		onclick={copyPath}
 		role="menuitem"
 	>
