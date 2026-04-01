@@ -3,7 +3,13 @@
 	import JsonNode from './JsonNode.svelte';
 	import JsonSearch from './JsonSearch.svelte';
 	import { parsePartialJson } from '$lib/parseJson';
-	import { computeMatches, SEARCH_CTX, type SearchCtx } from '$lib/searchJson';
+	import {
+		computeMatches,
+		isValidRegex,
+		SEARCH_CTX,
+		type SearchCtx,
+		type SearchOptions
+	} from '$lib/searchJson';
 
 	interface Props {
 		content: string;
@@ -30,9 +36,17 @@
 	let searchOpen = $state(false);
 	let searchTerm = $state('');
 	let currentMatchIdx = $state(-1);
+	let regexEnabled = $state(false);
+	let caseSensitive = $state(false);
+
+	const searchOptions = $derived<SearchOptions>({ regex: regexEnabled, caseSensitive });
+
+	const invalidRegex = $derived(regexEnabled && searchTerm.length > 0 && !isValidRegex(searchTerm));
 
 	const matches = $derived(
-		result.error === null ? computeMatches(result.data, searchTerm) : []
+		result.error === null && !invalidRegex
+			? computeMatches(result.data, searchTerm, searchOptions)
+			: []
 	);
 
 	// Map from path → which parts (key/value) have at least one match
@@ -103,6 +117,9 @@
 		get term() {
 			return searchTerm;
 		},
+		get options() {
+			return searchOptions;
+		},
 		get matchMap() {
 			return matchMap;
 		},
@@ -131,10 +148,15 @@
 				term={searchTerm}
 				matchCount={matches.length}
 				currentIdx={currentMatchIdx}
+				{regexEnabled}
+				{caseSensitive}
+				{invalidRegex}
 				onnext={nextMatch}
 				onprev={prevMatch}
 				onclose={closeSearch}
 				oninput={(t) => (searchTerm = t)}
+				onToggleRegex={() => (regexEnabled = !regexEnabled)}
+				onToggleCase={() => (caseSensitive = !caseSensitive)}
 			/>
 		{/if}
 

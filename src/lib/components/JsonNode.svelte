@@ -44,10 +44,17 @@
 	const keyStr = $derived(keyName === null ? '' : typeof keyName === 'number' ? `[${keyName}]` : String(keyName));
 
 	// Highlight segments for key and value
-	const keySegs = $derived(search ? splitHighlight(keyStr, search.term) : [{ text: keyStr, match: false }]);
+	const noOpts = { regex: false, caseSensitive: false };
+	const keySegs = $derived(
+		search
+			? splitHighlight(keyStr, search.term, search.options)
+			: [{ text: keyStr, match: false }]
+	);
 	const valSegs = $derived.by(() => {
 		const raw = formatValue();
-		return search ? splitHighlight(raw, search.term) : [{ text: raw, match: false }];
+		return search
+			? splitHighlight(raw, search.term, search.options)
+			: [{ text: raw, match: false }];
 	});
 
 	// Is this the currently selected match?
