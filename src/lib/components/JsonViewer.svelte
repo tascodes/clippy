@@ -52,9 +52,11 @@
 	// True only when the user has pressed next/prev — typing alone never expands or scrolls.
 	let userNavigated = $state(false);
 
-	// Expand ancestor nodes only when the user has actively stepped to a match.
+	// Auto-expand when term is 3+ chars, or when user actively navigates with shorter terms.
 	const expandPaths = $derived(
-		userNavigated && currentMatch ? new Set(currentMatch.ancestorPaths) : new Set<string>()
+		(userNavigated || searchTerm.length >= 3) && currentMatch
+			? new Set(currentMatch.ancestorPaths)
+			: new Set<string>()
 	);
 
 	// When the match list changes (term changed), reset index and clear navigation flag.
