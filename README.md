@@ -10,6 +10,7 @@ Clippy reveals the hidden complexity of clipboard data. When you copy something,
 - View images and their metadata
 - Inspect MIME types and file sizes
 - Copy content back as plaintext
+- Navigate JSON structures easily
 
 Built with SvelteKit and deployed to Cloudflare Workers.
 
