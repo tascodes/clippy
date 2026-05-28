@@ -39,6 +39,17 @@
 		}
 	}
 
+	async function copyFormattedJson(content: string | null) {
+		if (!content) return;
+		try {
+			const formatted = JSON.stringify(JSON.parse(content), null, 2);
+			await navigator.clipboard.writeText(formatted);
+		} catch (err) {
+			console.error('Failed to copy:', err);
+			alert('Failed to copy to clipboard');
+		}
+	}
+
 	async function pasteFromClipboardAPI() {
 		try {
 			const clipboardItems = await navigator.clipboard.read();
@@ -277,6 +288,15 @@
 											>
 												Copy as plaintext
 											</button>
+											{#if looksLikeJson(data.content)}
+												<button
+													onclick={() => copyFormattedJson(data.content)}
+													class="w-fit appearance-none border-2 border-black bg-white px-2 py-1 text-xs text-black transition-colors hover:bg-purple-100"
+													style="box-shadow: 0.1em 0.1em currentColor;"
+												>
+													Copy formatted value
+												</button>
+											{/if}
 										{/if}
 									</div>
 								</td>

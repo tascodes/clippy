@@ -29,7 +29,8 @@
 	const isNull = $derived(data === null);
 	const isObject = $derived(!isNull && typeof data === 'object' && !Array.isArray(data));
 	const isArray = $derived(Array.isArray(data));
-	const isExpandable = $derived(isObject || isArray);
+	const isEmpty = $derived((isArray && (data as unknown[]).length === 0) || (isObject && Object.keys(data as object).length === 0));
+	const isExpandable = $derived((isObject || isArray) && !isEmpty);
 
 	const entries = $derived.by((): [string | number, unknown][] => {
 		if (isObject) return Object.entries(data as Record<string, unknown>);
@@ -152,7 +153,9 @@
 		{/if}
 
 		<!-- Value -->
-		{#if isExpandable}
+		{#if isEmpty}
+			<span class="text-gray-500">{isArray ? '[]' : '{}'}</span>
+		{:else if isExpandable}
 			{#if collapsed}
 				<button
 					onclick={() => (collapsed = false)}
