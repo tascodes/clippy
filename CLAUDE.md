@@ -21,6 +21,7 @@ This is a SvelteKit application deployed to Cloudflare Workers, configured with 
 ## Architecture
 
 ### Deployment Target
+
 - Configured for Cloudflare Workers via `@sveltejs/adapter-cloudflare`
 - Wrangler configuration in `wrangler.jsonc`
 - Worker entry point: `.svelte-kit/cloudflare/_worker.js` (generated)
@@ -28,6 +29,7 @@ This is a SvelteKit application deployed to Cloudflare Workers, configured with 
 - Node.js compatibility flag: `nodejs_als` enabled
 
 ### Project Structure
+
 - **src/routes/**: SvelteKit routes (file-based routing)
 - **src/lib/**: Reusable components and utilities (accessible via `$lib` alias)
 - **src/app.d.ts**: TypeScript types for App namespace, includes Platform interface for Cloudflare env
@@ -36,6 +38,7 @@ This is a SvelteKit application deployed to Cloudflare Workers, configured with 
 - **.svelte-kit/**: Generated SvelteKit build artifacts (gitignored)
 
 ### Technology Stack
+
 - **Framework**: SvelteKit v2 with Svelte v5
 - **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite` plugin)
 - **Build tool**: Vite v7
@@ -46,23 +49,28 @@ This is a SvelteKit application deployed to Cloudflare Workers, configured with 
 ## Key Configuration Notes
 
 ### TypeScript
+
 - Extends `.svelte-kit/tsconfig.json` (auto-generated)
 - Strict mode enabled
 - Path aliases handled by SvelteKit configuration (except `$lib`)
 - Worker runtime types imported via `worker-configuration.d.ts`
 
 ### Cloudflare Platform Access
+
 Access Cloudflare platform features via `event.platform` in SvelteKit endpoints:
+
 - `event.platform.env`: Environment variables and bindings (Env type)
 - `event.platform.cf`: Request metadata (CfProperties type)
 - `event.platform.ctx`: Execution context
 
 ### Styling
+
 Tailwind v4 is integrated via Vite plugin (not PostCSS). Global styles in `src/app.css`.
 
 ## Wrangler Configuration
 
 The `wrangler.jsonc` file contains commented examples for:
+
 - Smart Placement
 - Bindings (KV, D1, R2, etc.)
 - Environment variables

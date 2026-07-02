@@ -1,7 +1,9 @@
 <script lang="ts">
 	import DOMPurify from 'dompurify';
 	import JsonViewer from '$lib/components/JsonViewer.svelte';
+	import ClaudeSession from '$lib/components/ClaudeSession.svelte';
 	import { looksLikeJson } from '$lib/parseJson';
+	import { looksLikeClaudeSession } from '$lib/parseClaudeSession';
 
 	interface ClipboardData {
 		type: string;
@@ -19,14 +21,34 @@
 	// Defaults to JSON view for any item whose content parses as a JSON object/array.
 	let jsonViewActive = $state<Record<number, boolean>>({});
 
+	// Tracks which clipboard items are showing the Claude session view (true) vs raw view (false).
+	let sessionViewActive = $state<Record<number, boolean>>({});
+
+	// Index of the clipboard item currently shown fullscreen, or null.
+	let fullscreenItem = $state<number | null>(null);
+
+	$effect(() => {
+		if (fullscreenItem === null) return;
+		function handler(e: KeyboardEvent) {
+			if (e.key === 'Escape') fullscreenItem = null;
+		}
+		window.addEventListener('keydown', handler);
+		return () => window.removeEventListener('keydown', handler);
+	});
+
 	$effect(() => {
 		const next: Record<number, boolean> = {};
+		const nextSession: Record<number, boolean> = {};
 		clipboardData.forEach((item, i) => {
-			if (!item.imageUrl && !item.html && looksLikeJson(item.content)) {
+			if (item.imageUrl || item.html) return;
+			if (looksLikeClaudeSession(item.content)) {
+				nextSession[i] = true;
+			} else if (looksLikeJson(item.content)) {
 				next[i] = true;
 			}
 		});
 		jsonViewActive = next;
+		sessionViewActive = nextSession;
 	});
 
 	async function copyAsPlaintext(content: string | null) {
@@ -327,6 +349,94 @@
 														>{data.content}</code
 													></pre>
 											</div>
+										</div>
+									{:else if looksLikeClaudeSession(data.content)}
+										<!-- Claude session viewer with Raw toggle -->
+										<div
+											class="border-2 border-black bg-white {fullscreenItem === i
+												? 'fixed inset-0 z-50 flex flex-col'
+												: 'overflow-hidden'}"
+										>
+											<div class="flex flex-shrink-0 border-b-2 border-black">
+												<button
+													onclick={() =>
+														(sessionViewActive = { ...sessionViewActive, [i]: true })}
+													class="border-r-2 border-black px-3 py-1.5 text-xs font-semibold transition-colors {sessionViewActive[
+														i
+													]
+														? 'bg-purple-100 text-purple-700'
+														: 'bg-white text-gray-500 hover:bg-gray-50'}"
+												>
+													Session
+												</button>
+												<button
+													onclick={() =>
+														(sessionViewActive = { ...sessionViewActive, [i]: false })}
+													class="px-3 py-1.5 text-xs font-semibold transition-colors {!sessionViewActive[
+														i
+													]
+														? 'bg-purple-100 text-purple-700'
+														: 'bg-white text-gray-500 hover:bg-gray-50'}"
+												>
+													Raw
+												</button>
+												<button
+													onclick={() => (fullscreenItem = fullscreenItem === i ? null : i)}
+													title={fullscreenItem === i ? 'Exit fullscreen (Esc)' : 'Fullscreen'}
+													aria-label={fullscreenItem === i ? 'Exit fullscreen' : 'Fullscreen'}
+													class="ml-auto border-l-2 border-black px-3 py-1.5 text-gray-500 transition-colors hover:bg-purple-100 hover:text-purple-700"
+												>
+													{#if fullscreenItem === i}
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="2"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+														>
+															<path d="M8 3v3a2 2 0 0 1-2 2H3" />
+															<path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+															<path d="M3 16h3a2 2 0 0 1 2 2v3" />
+															<path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+														</svg>
+													{:else}
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="2"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+														>
+															<path d="M8 3H5a2 2 0 0 0-2 2v3" />
+															<path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+															<path d="M3 16v3a2 2 0 0 0 2 2h3" />
+															<path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+														</svg>
+													{/if}
+												</button>
+											</div>
+											{#if sessionViewActive[i]}
+												<div class={fullscreenItem === i ? 'min-h-0 flex-1' : ''}>
+													<ClaudeSession
+														content={data.content ?? ''}
+														fullscreen={fullscreenItem === i}
+													/>
+												</div>
+											{:else}
+												<pre
+													class="overflow-auto p-4 text-sm break-words whitespace-pre-wrap {fullscreenItem ===
+													i
+														? 'min-h-0 flex-1'
+														: 'max-h-[32rem]'}"><code>{data.content}</code></pre>
+											{/if}
 										</div>
 									{:else if looksLikeJson(data.content)}
 										<!-- JSON viewer with Raw toggle -->

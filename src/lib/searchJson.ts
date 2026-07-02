@@ -179,11 +179,7 @@ function collectMatches(
  * Returns all matches for `term` within `data` in document (depth-first) order.
  * Mirrors the same root-unwrapping logic that JsonViewer uses when rendering.
  */
-export function computeMatches(
-	data: unknown,
-	term: string,
-	options: SearchOptions
-): SearchMatch[] {
+export function computeMatches(data: unknown, term: string, options: SearchOptions): SearchMatch[] {
 	if (!term) return [];
 
 	const out: SearchMatch[] = [];
