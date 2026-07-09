@@ -75,6 +75,7 @@
 			value={term}
 			oninput={(e) => oninput(e.currentTarget.value)}
 			onkeydown={handleKeydown}
+			onpaste={(e) => e.stopPropagation()}
 			placeholder="Find in JSON…"
 			class="flex-1 bg-transparent font-mono text-sm outline-none"
 		/>
